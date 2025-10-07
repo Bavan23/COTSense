@@ -30,7 +30,7 @@ export default function Home() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroImage})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+        <div className="absolute inset-0 bg-background/40" />
         
         <div className="relative z-10 container mx-auto px-6 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
