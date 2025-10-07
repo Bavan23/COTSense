@@ -25,14 +25,8 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroImage})` }}
-        />
-        <div className="absolute inset-0 bg-background/40" />
-        
-        <div className="relative z-10 container mx-auto px-6 text-center">
+      <section className="relative py-20 bg-background">
+        <div className="container mx-auto px-6 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Zap className="h-8 w-8 text-primary" />
             <h1 className="text-6xl font-semibold tracking-tight">COTSense</h1>
