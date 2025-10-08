@@ -30,11 +30,24 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    sourcemap: false, // 🔹 disable source maps to prevent broken map errors
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // 🔹 ignore source map warnings from dependencies
+        if (warning.code === "SOURCEMAP_ERROR") return;
+        warn(warning);
+      },
+    },
   },
   server: {
     fs: {
       strict: true,
       deny: ["**/.*"],
+    },
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      sourcemap: false, // 🔹 ignore broken source maps in node_modules
     },
   },
 });
