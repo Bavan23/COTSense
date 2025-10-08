@@ -10,11 +10,18 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
       <div className="container mx-auto flex h-16 items-center justify-between px-6">
         <Link href="/">
-          <div className="flex items-center gap-2 hover-elevate active-elevate-2 rounded-md px-3 py-2 -ml-3 cursor-pointer" data-testid="link-home">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
-              <span className="text-lg font-semibold text-primary-foreground">C</span>
-            </div>
-            <span className="text-lg font-semibold tracking-tight">COTSense</span>
+          <div
+            className="flex items-center gap-2 hover-elevate active-elevate-2 rounded-md px-3 py-2 -ml-3 cursor-pointer"
+            data-testid="link-home"
+          >
+            <img
+              src="/COTSensefavicon.png"
+              alt="COTSense Logo"
+              className="h-8 w-8 rounded-md object-contain bg-transparent"
+            />
+            <span className="text-lg font-semibold tracking-tight">
+              COTSense
+            </span>
           </div>
         </Link>
 
@@ -29,7 +36,7 @@ export function Header() {
               Search
             </Button>
           </Link>
-          
+
           <Link href="/admin">
             <Button
               variant={location === "/admin" ? "secondary" : "ghost"}

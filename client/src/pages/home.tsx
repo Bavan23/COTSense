@@ -30,11 +30,17 @@ export default function Home() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroImage})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        
+        <div
+  className="
+    absolute inset-0 bg-gradient-to-t 
+    from-background/90 via-background/70 to-background/30 
+    backdrop-blur-[3px]
+    dark:from-background/95 dark:via-background/85 dark:to-background/60
+  "
+/>
+
         <div className="relative z-10 container mx-auto px-6 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Zap className="h-8 w-8 text-primary" />
             <h1 className="text-6xl font-semibold tracking-tight">COTSense</h1>
           </div>
           <p className="text-xl text-foreground/90 mb-8 max-w-2xl mx-auto">
