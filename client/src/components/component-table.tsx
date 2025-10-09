@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Component } from "@shared/schema";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { StatusBadge } from "./status-badge";
@@ -30,8 +30,18 @@ export function ComponentTable({ components, onExplain, explanations = {} }: Com
   };
 
   const sortedComponents = [...components].sort((a, b) => {
-    const aVal = a[sortField] ?? "";
-    const bVal = b[sortField] ?? "";
+    // Map camelCase to snake_case for backend data
+    const fieldMap: Record<SortField, string> = {
+      partNumber: 'part_number',
+      manufacturer: 'manufacturer',
+      specMatch: 'spec_match',
+      totalScore: 'total_score',
+      price: 'price'
+    };
+    
+    const backendField = fieldMap[sortField];
+    const aVal = (a as any)[backendField] ?? a[sortField] ?? "";
+    const bVal = (b as any)[backendField] ?? b[sortField] ?? "";
     const multiplier = sortDirection === "asc" ? 1 : -1;
     
     if (typeof aVal === "number" && typeof bVal === "number") {
@@ -40,14 +50,24 @@ export function ComponentTable({ components, onExplain, explanations = {} }: Com
     return String(aVal).localeCompare(String(bVal)) * multiplier;
   });
 
-  const toggleRow = (id: string) => {
+  const toggleRow = (componentId: string) => {
+    const component = components.find(c => c.id === componentId);
     const newExpanded = new Set(expandedRows);
-    if (newExpanded.has(id)) {
-      newExpanded.delete(id);
+    
+    if (newExpanded.has(componentId)) {
+      newExpanded.delete(componentId);
     } else {
-      newExpanded.add(id);
-      if (onExplain && !explanations[id]) {
-        onExplain(id);
+      newExpanded.add(componentId);
+      if (onExplain && !explanations[componentId] && component) {
+        console.log('[ComponentTable] 👆 User clicked on component:', {
+          id: component.id,
+          part_number: (component as any).part_number || component.partNumber,
+          manufacturer: component.manufacturer,
+          category: component.category,
+          spec_match: (component as any).spec_match,
+          total_score: (component as any).total_score
+        });
+        onExplain(componentId);
       }
     }
     setExpandedRows(newExpanded);
@@ -121,9 +141,8 @@ export function ComponentTable({ components, onExplain, explanations = {} }: Com
           </thead>
           <tbody>
             {sortedComponents.map((component) => (
-              <>
+              <React.Fragment key={component.id}>
                 <tr 
-                  key={component.id}
                   className={cn(
                     "border-b hover-elevate cursor-pointer transition-colors",
                     expandedRows.has(component.id) && "border-l-4 border-l-primary"
@@ -141,18 +160,18 @@ export function ComponentTable({ components, onExplain, explanations = {} }: Com
                     </Button>
                   </td>
                   <td className="px-6 py-4 font-mono text-sm font-medium" data-testid={`text-part-${component.id}`}>
-                    {component.partNumber}
+                    {(component as any).part_number || component.partNumber}
                   </td>
                   <td className="px-6 py-4 text-sm">{component.manufacturer}</td>
                   <td className="px-6 py-4 text-sm text-muted-foreground">{component.category}</td>
                   <td className="px-6 py-4">
-                    {component.specMatch !== null && component.specMatch !== undefined && (
-                      <ScoreBadge score={component.specMatch} label="Match" />
+                    {((component as any).spec_match !== null && (component as any).spec_match !== undefined) && (
+                      <ScoreBadge score={(component as any).spec_match} label="Match" />
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    {component.totalScore !== null && component.totalScore !== undefined && (
-                      <ScoreBadge score={component.totalScore} label="Total" />
+                    {((component as any).total_score !== null && (component as any).total_score !== undefined) && (
+                      <ScoreBadge score={(component as any).total_score} label="Total" />
                     )}
                   </td>
                   <td className="px-6 py-4 font-mono text-sm font-medium">
@@ -179,19 +198,88 @@ export function ComponentTable({ components, onExplain, explanations = {} }: Com
                           </div>
                         )}
                         {explanations[component.id] && (
-                          <div>
-                            <p className="text-sm font-medium mb-1">AI Explanation</p>
-                            <p className="text-sm text-muted-foreground">{explanations[component.id]}</p>
+                          <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                            <div className="flex items-start gap-3">
+                              <div className="flex-shrink-0 w-6 h-6 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mt-0.5">
+                                <svg className="w-3 h-3 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                </svg>
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                                  🤖 AI Recommendation Analysis
+                                </h4>
+                                <div className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed">
+                                  {explanations[component.id].split('\n').map((line, index) => (
+                                    <p key={index} className={index > 0 ? 'mt-2' : ''}>
+                                      {line.trim()}
+                                    </p>
+                                  ))}
+                                </div>
+                                
+                                {/* Score Display */}
+                                {(((component as any).spec_match !== null && (component as any).spec_match !== undefined) || 
+                                 ((component as any).total_score !== null && (component as any).total_score !== undefined)) && (
+                                  <div className="mt-3 flex items-center gap-3 p-2 bg-blue-100/50 dark:bg-blue-900/20 rounded-md">
+                                    {(component as any).spec_match !== null && (component as any).spec_match !== undefined && (
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Spec Match:</span>
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                          {(component as any).spec_match.toFixed(1)}%
+                                        </span>
+                                      </div>
+                                    )}
+                                    {(component as any).total_score !== null && (component as any).total_score !== undefined && (
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Total Score:</span>
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                                          {(component as any).total_score.toFixed(1)}%
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+
+                                <div className="mt-3 flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400">
+                                  <span className="inline-flex items-center gap-1">
+                                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                    </svg>
+                                    AI-Powered Match
+                                  </span>
+                                  <span>•</span>
+                                  <span>Based on specifications & compatibility</span>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         )}
                         {onExplain && !explanations[component.id] && (
-                          <p className="text-sm text-muted-foreground italic">Loading explanation...</p>
+                          <div className="bg-gray-50 dark:bg-gray-900/30 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                            <div className="flex items-center gap-3">
+                              <div className="flex-shrink-0">
+                                <div className="w-6 h-6 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                  </svg>
+                                  <span className="font-medium">AI is analyzing this component...</span>
+                                </div>
+                                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                  Generating personalized recommendation based on your search query
+                                </p>
+                              </div>
+                            </div>
+                          </div>
                         )}
                       </div>
                     </td>
                   </tr>
                 )}
-              </>
+              </React.Fragment>
             ))}
           </tbody>
         </table>

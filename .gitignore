@@ -1,26 +1,217 @@
-# Node
+# ==============================================
+# COMPREHENSIVE GITIGNORE FOR COTSENSE PROJECT
+# ==============================================
+
+# ==============================================
+# NODE.JS / FRONTEND
+# ==============================================
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# build
-dist/
-build/
-.coverage
-
-# OS/editor
-.DS_Store
-.vscode/
-.idea/
-
-# Replit/local
-.replit
-.local/
-
-# assets
-attached_assets/generated_images/
-
-# environment
+.npm
+.yarn-integrity
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
+dist/
+build/
+.next/
+out/
+.vite/
+coverage/
+
+# ==============================================
+# PYTHON / BACKEND
+# ==============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ==============================================
+# DATABASE
+# ==============================================
+# SQLite (if using local development)
+*.db
+*.sqlite
+*.sqlite3
+
+# PostgreSQL (local development)
+postgresql_data/
+
+# ==============================================
+# ML/AI MODELS AND DATA
+# ==============================================
+data/
+*.bin
+*.pkl
+*.h5
+*.model
+*.weights
+*.npy
+*.npz
+*.parquet
+*.csv
+!data/README.md
+
+# FAISS indices
+faiss_index*.bin
+*embeddings*.npy
+*embeddings*.pkl
+
+# Model artifacts
+model_config*.json
+component_embeddings*
+
+# ==============================================
+# LOGS AND TEMP FILES
+# ==============================================
+logs/
+*.log
+tmp/
+temp/
+.tmp/
+*.tmp
+*.temp
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# ==============================================
+# OS SPECIFIC
+# ==============================================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+
+# ==============================================
+# DEVELOPMENT TOOLS
+# ==============================================
+# Replit
+.replit
+.replit-run
+.replit-config
+
+# Local development
+.local/
+.cache/
+*.tgz
+*.tar.gz
+
+# ==============================================
+# GENERATED ASSETS
+# ==============================================
+attached_assets/generated_images/
+client/public/generated_images/
+public/generated_images/
+
+# ==============================================
+# SECRETS AND CONFIGS (PRODUCTION ONLY)
+# ==============================================
+# These should be in .env files and NOT committed
+secrets/
+config/production.json
+config/local.json
+
+# ==============================================
+# TESTING
+# ==============================================
+test-results/
+playwright-report/
+coverage/
+
+# ==============================================
+# DOCUMENTATION (if you want to exclude)
+# ==============================================
+# docs/_build/
+# *.md (uncomment if you don't want to track docs)
+
+# ==============================================
+# MISC
+# ==============================================
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+*.sublime-project
+*.sublime-workspace
+
+# ==============================================
+# GIT
+# ==============================================
+.git
+.gitignore
+README.md (if you want to exclude)
+
+# ==============================================
+# ALLOW SPECIFIC FILES (uncomment if needed)
+# ==============================================
+# !.env.example
+# !README.md
+# !docs/README.md

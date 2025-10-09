@@ -11,6 +11,8 @@ import ComponentDetails from "@/pages/component-details";
 import Admin from "@/pages/admin";
 import About from "@/pages/about";
 import NotFound from "@/pages/not-found";
+import { ApiTest } from "@/components/ApiTest";
+import { ApiDebugger } from "@/components/ApiDebugger";
 
 function Router() {
   return (
@@ -20,6 +22,8 @@ function Router() {
       <Route path="/component/:id" component={ComponentDetails} />
       <Route path="/admin" component={Admin} />
       <Route path="/about" component={About} />
+      <Route path="/api-test" component={ApiTest} />
+      <Route path="/debug" component={ApiDebugger} />
       <Route component={NotFound} />
     </Switch>
   );

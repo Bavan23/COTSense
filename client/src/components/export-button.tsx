@@ -12,11 +12,11 @@ export function ExportButton({ components, filename = "components" }: ExportButt
   const exportToCSV = () => {
     const headers = ["Part Number", "Manufacturer", "Category", "Spec Match", "Total Score", "Price", "Stock"];
     const rows = components.map(c => [
-      c.partNumber,
-      c.manufacturer,
-      c.category,
-      c.specMatch?.toFixed(1) ?? "",
-      c.totalScore?.toFixed(1) ?? "",
+      (c as any).part_number || c.partNumber || "",
+      c.manufacturer || "",
+      c.category || "",
+      ((c as any).spec_match || c.specMatch)?.toFixed(1) ?? "",
+      ((c as any).total_score || c.totalScore)?.toFixed(1) ?? "",
       c.price?.toFixed(2) ?? "",
       c.stock ?? ""
     ]);
